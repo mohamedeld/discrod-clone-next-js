@@ -5,7 +5,7 @@ interface IProps{
 }
 const AuthLayout = ({children}:IProps) => {
   return (
-    <div className="h-full">{children}</div>
+    <div className="min-h-screen w-full flex justify-center items-center h-full">{children}</div>
   )
 }
 

@@ -5,11 +5,114 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
+    provider = "prisma-client-js"
+    output   = "../lib/generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+    provider = "mysql"
+    url      = env("DATABASE_URL")
 }
+
+model User {
+    id            String    @id @default(cuid())
+    username      String?   @unique
+    sessions      Session[]
+    profile       Profile?
+    name      String
+    email     String  @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+}
+
+model Profile {
+    id        String   @id @default(cuid())
+    userId    String   @unique
+    imageUrl  String   @db.Text
+    user      User     @relation(fields: [userId], references: [id])
+    servers Server[]
+    members Member[]
+    channels Channel[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Server{
+    id String @id @default(cuid())
+    name String
+    imageUrl String @db.Text
+    inviteCode String @db.Text
+
+    profileId String
+    profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+    members Member[]
+    channels Channel[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    @@index([profileId])
+}
+
+
+enum MemberRole {
+    ADMIN
+    MODERATOR
+    GUEST
+}
+
+model Member{
+    id String @id @default(cuid())
+    role MemberRole @default(GUEST)
+
+    profileId String
+    profile Profile @relation(fields: [profileId],references: [id],onDelete: Cascade)
+
+    serverId String
+    server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([profileId])
+    @@index([serverId])
+}
+
+enum ChannelType {
+    TEXT
+    AUDIO
+    VIDEO
+}
+
+model Channel{
+    id String @id @default(cuid())
+    name String
+    type ChannelType @default(TEXT)
+
+    profileId String
+    profile Profile @relation(fields: [profileId], references: [id], onDelete:Cascade)
+
+    serverId String
+    server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([profileId])
+    @@index([serverId])
+}
+
+
