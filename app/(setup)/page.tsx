@@ -1,3 +1,4 @@
+import InitalModal from "@/components/modals/InitalModal";
 import { initialProfile } from "@/lib/initial-profile"
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
@@ -19,7 +20,7 @@ const SetupPage = async () => {
     }
     
   return (
-    <div>SetupPage</div>
+        <InitalModal/>
   )
 }
 
