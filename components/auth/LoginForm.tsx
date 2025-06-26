@@ -21,8 +21,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { toast } from "sonner";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
+    const router = useRouter();
     const form = useForm<z.infer<typeof authSchema>>({
         defaultValues: {
             name: '',
@@ -32,11 +36,23 @@ const LoginForm = () => {
         mode: 'onChange'
     })
     const onSubmit = async (data: z.infer<typeof authSchema>) => {
-        console.log(data);
-        // Here you would typically handle the form submission, e.g., send data to an API
-        // For example:
-        // await api.post('/login', data);
+        try{
+            const result = await signIn("credentials",{
+                redirect:false,
+                ...data
+            });
+            if(result.error){
+                console.log(result.error)
+                toast.error(result?.error);
+                return;
+            }
+            toast.success("Logged in successfully");
+            router.push("/");
+        }catch(error){
+            toast.error((error as Error)?.message || "Something went wrong" )
+        }
     }
+    const isSubmitting = form.formState.isSubmitting;
     return (
         <div className="w-full md:w-[30rem]">
             <Card>
@@ -74,8 +90,8 @@ const LoginForm = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button disabled={form?.formState?.isSubmitting} className="w-full" type="submit">{
-                                form?.formState?.isSubmitting ? "Submitting..." : "Create Account"
+                            <Button disabled={isSubmitting} className="w-full cursor-pointer" type="submit">{
+                                isSubmitting ? "Submitting..." : "Create Account"
                                 }</Button>
                         </form>
                     </Form>
