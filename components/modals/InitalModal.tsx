@@ -25,6 +25,8 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import {  UploadDropzone } from "@/utils/uploadthing";
 import "@uploadthing/react/styles.css"
+import Image from "next/image";
+import { X } from "lucide-react";
 
 const InitalModal = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -38,6 +40,7 @@ const InitalModal = () => {
   const isSubmitting = form?.formState?.isSubmitting;
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     try {
+        console.log(data);
     } catch (error) {
       toast.error((error as Error)?.message || "something went wrong");
     }
@@ -64,26 +67,36 @@ const InitalModal = () => {
                 <FormField
                   name="imageUrl"
                   control={form.control}
-                  render={({ field }) => (
+                  render={({ field }) => {
+                    const fileType = field?.value?.split(".").pop();
+                   
+                    return (
                     <FormItem>
                       <FormControl>
-                        <UploadDropzone
+                        {(field?.value && fileType !== "pdf") ?
+                        <div className="relative h-20 w-20">
+                            <Image src={field?.value} alt="upload image" fill className="object-cover"/>
+                            <button className="bg-rose-500 text-white p-1 rounded-full absolute top-0 right-0 shadow-sm" onClick={()=> field.onChange("")} type="button">
+                                <X className="h-4 w-4"/>
+                            </button>
+                        </div> : <UploadDropzone
                           endpoint={"imageUploader"}
                           
                           onClientUploadComplete={(res) => {
                             // Do something with the response
                             console.log("Files: ", res);
-                            field.onChange(res?.[0]?.url)
+                            field.onChange(res?.[0]?.ufsUrl)
                             toast.success("Upload Completed");
                           }}
                           onUploadError={(error: Error) => {
                             // Do something with the error.
                             toast.error(`ERROR! ${error.message}`);
                           }}
-                        />
+                        />}
                       </FormControl>
                     </FormItem>
-                  )}
+                  )
+                  }}
                 />
               </div>
               <FormField
@@ -97,7 +110,7 @@ const InitalModal = () => {
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
-                        className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                        className="bg-zinc-500 border-0 focus-visible:ring-0 text-black dark:focus-visible:ring-offset-0"
                         placeholder="Enter server name"
                         {...field}
                       />

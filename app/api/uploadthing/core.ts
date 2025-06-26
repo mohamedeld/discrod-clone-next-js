@@ -6,7 +6,7 @@ const f = createUploadthing();
 
 const handleAuth = async ()=>{
     const session = await auth();
-    if(session?.user){
+    if(!session?.user){
         throw new Error("Unauthorized");
     }
     return {userId:session?.user?.id}
