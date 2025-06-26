@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -27,8 +28,10 @@ import {  UploadDropzone } from "@/utils/uploadthing";
 import "@uploadthing/react/styles.css"
 import Image from "next/image";
 import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const InitalModal = () => {
+    const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       name: "",
@@ -38,11 +41,21 @@ const InitalModal = () => {
     mode: "onChange",
   });
   const isSubmitting = form?.formState?.isSubmitting;
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-        console.log(data);
+        const response = await axios.post("/api/servers",data);
+        if(response?.status ===200){
+            form.reset();
+            router.refresh();
+            toast.success("Server created successfully");
+            window.location.reload();
+        }
     } catch (error) {
-      toast.error((error as Error)?.message || "something went wrong");
+        if(axios.isAxiosError(error) && error?.response){
+            toast.error(error?.response?.data?.message)
+        }else{
+            toast.error((error as Error)?.message || "something went wrong");
+        }
     }
   };
   return (
