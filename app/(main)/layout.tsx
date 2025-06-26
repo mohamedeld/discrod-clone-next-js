@@ -4,9 +4,10 @@ import { ReactNode } from "react"
 interface IProps{
     children:ReactNode
 }
-const MainLayout = ({children}:IProps) => {
+const MainLayout = async ({children}:IProps) => {
   return (
-    <div className="h-full ">
+    <div className="h-full">
+        
         <div className="hidden md:flex h-full w-[72px] z-30 flex-col fixed inset-y-0">
             <NavigationSidebar/>
         </div>
