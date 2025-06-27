@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import {  ServerWithMembersWithProfilesAndUsers } from "@/types";
 import { ScrollArea } from "../ui/scroll-area";
 import MemberAvatar from "../MemberAvatar";
-import { Check, Gavel, Loader2, MoreVertical, Shield, ShieldCheck, ShieldIcon, ShieldQuestion } from "lucide-react";
+import { Check, Gavel, Loader2, MoreVertical, Shield, ShieldCheck } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +41,31 @@ const MemberModal = ({ server }: IProps) => {
   const [open, setOpen] = useState(false);
   const [loadingId,setLoadingId] = useState("");
 
+  const onKick = async (memberId:string)=>{
+    try{
+      setLoadingId(memberId);
+      const url = queryString.stringifyUrl({
+        url:`/api/members/${memberId}`,
+        query:{
+          serverId:server?.id
+        }
+      })
+      const response = await axios.delete(url);
+      if(response?.status === 200){
+        router.refresh();
+        toast.success("Deleted successfully");
+      }
+    }catch(error){
+      if(axios.isAxiosError(error) && error?.response){
+        toast.error(error?.response?.data?.message)
+      }else{
+        toast.error((error as Error)?.message || "Something went wrong")
+      }
+    }finally{
+      setLoadingId("")
+    }
+  }
+
   const onRoleChange = async (memberId:string,role:MemberRole)=>{
     try{
       setLoadingId(memberId);
@@ -51,7 +76,7 @@ const MemberModal = ({ server }: IProps) => {
           memberId
         }
       })
-      const response = await axios.patch(url);
+      const response = await axios.patch(url,{role});
       if(response?.status === 200){
         router.refresh();
         toast.success("Role changed successfully");
@@ -83,7 +108,6 @@ const MemberModal = ({ server }: IProps) => {
           </DialogHeader>
           <ScrollArea className="mt-8 max-h-[420px] pr-6">
             {server?.members?.map((member)=>{
-              console.log(member)
               return (
                 <div key={member?.id} className="flex items-center gap-x-2 mb-6">
                     <MemberAvatar src={member?.profile?.imageUrl}/>
@@ -98,21 +122,21 @@ const MemberModal = ({ server }: IProps) => {
                         
                       </div>
                       {/* server?.profileId !== member?.profileId && loadingId !== member?.id  */}
-                    {true&& (
+                    {server?.profileId !== member?.profileId && loadingId !== member?.id&& (
                       <div className="ml-auto">
                         <DropdownMenu>
                           <DropdownMenuTrigger>
                             <MoreVertical className="h-4 w-4 text-zinc-500"/>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent side="left">
-                           <DropdownMenuItem onSelect={(e)=> e.preventDefault()}>
+                           <DropdownMenuItem onSelect={(e)=> e.preventDefault()} onClick={()=> onRoleChange(member?.id,"GUEST")}>
                                     <Shield className="w-4 h-4 mr-2"/>
                                     Guest
                                     {member?.role === "GUEST" && (
                                       <Check className="w-4 h-4 ml-auto"/>
                                     )}
                                   </DropdownMenuItem>
-                           <DropdownMenuItem onSelect={(e)=> e.preventDefault()}>
+                           <DropdownMenuItem onSelect={(e)=> e.preventDefault()} onClick={()=> onRoleChange(member?.id,"MODERATOR")}>
                                     <ShieldCheck className="w-4 h-4 mr-2"/>
                                     Moderator
                                     {member?.role === "MODERATOR" && (
@@ -120,7 +144,7 @@ const MemberModal = ({ server }: IProps) => {
                                     )}
                                   </DropdownMenuItem>
                                   <DropdownMenuSeparator/>
-                                   <DropdownMenuItem onSelect={(e)=> e.preventDefault()}>
+                                   <DropdownMenuItem onSelect={(e)=> e.preventDefault()} onClick={()=> onKick(member?.id)}>
                                     <Gavel className="h-4 w-4 mr-2"/>
                                     Kick
                                    </DropdownMenuItem>
