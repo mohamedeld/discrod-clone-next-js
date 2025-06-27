@@ -6,6 +6,7 @@ import { ChevronDown, LogOut, PlusCircle, Settings, Trash, UserPlus, Users } fro
 import InviteModal from "../modals/InviteModal";
 import CreateServerModal from "../modals/CreateServerModal";
 import MemberModal from "../modals/MemberModal";
+import CreateChannelModal from "../modals/CreateChannelModal";
 
 interface IProps{
     server:ServerWithMembersWithProfiles;
@@ -47,8 +48,11 @@ const ServerHeader = ({server,role}:IProps) => {
                 </DropdownMenuItem>
             )}
             {isModerator && (
-                <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer">
-                    Create Channel
+                <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer" onSelect={(e)=>{ e.preventDefault()
+                                                        e.stopPropagation();
+
+                }}>
+                    <CreateChannelModal server={server}/>
                     <PlusCircle className="h-4 w-4 ml-auto"/>
                 </DropdownMenuItem>
             )}
