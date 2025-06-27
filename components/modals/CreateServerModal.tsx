@@ -31,16 +31,22 @@ import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import NavigationAction from "../nav/NavigationAction";
 import { useState } from "react";
+import { Server } from "@/lib/generated/prisma";
 
 
-const CreateServerModal = () => {
+interface IProps{
+  isUpdate?:boolean;
+  server?:Server
+}
+
+const CreateServerModal = ({isUpdate,server}:IProps) => {
   const router = useRouter();
   const [open,setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
-      name: "",
-      imageUrl: "",
+      name: server?.name ? server?.name : "",
+      imageUrl: server?.imageUrl ? server?.imageUrl : "",
     },
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -48,13 +54,22 @@ const CreateServerModal = () => {
   const isSubmitting = form?.formState?.isSubmitting;
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
+      if(isUpdate){
+        const response = await axios.patch(`/api/servers/${server?.id}`,data);
+        if(response?.status ===200){
+            router.refresh();
+            toast.success("Server updated successfully");
+            setOpen(false);
+          }
+      }else{
         const response = await axios.post("/api/servers",data);
         if(response?.status ===200){
             form.reset();
             router.refresh();
             toast.success("Server created successfully");
             setOpen(false);
-        }
+          }
+      }
     } catch (error) {
         if(axios.isAxiosError(error) && error?.response){
             toast.error(error?.response?.data?.message)
@@ -67,7 +82,7 @@ const CreateServerModal = () => {
     <div>
        <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <NavigationAction/>
+      {isUpdate ? <button>Server Settings</button> :  <NavigationAction/>}
       </DialogTrigger>
       <DialogContent className="bg-white text-black p-0">
         <DialogHeader className="pt-8 px-6">
@@ -141,7 +156,7 @@ const CreateServerModal = () => {
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
               <Button disabled={isSubmitting} variant={"primary"}>
-                {isSubmitting ? "Creating..." : "Create"}
+                {isSubmitting ? isUpdate ? "Updating...":"Creating..." :isUpdate ? "Update": "Create"}
               </Button>
             </DialogFooter>
           </form>

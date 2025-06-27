@@ -24,7 +24,11 @@ const ServerSidebar = async ({serverId}:IProps) => {
             },
             members:{
                 include:{
-                    profile:true
+                    profile:{
+                        include:{
+                            user:true
+                        }
+                    }
                 },
                 orderBy:{
                     role:"asc"

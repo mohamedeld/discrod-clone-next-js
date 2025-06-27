@@ -1,9 +1,11 @@
 "use client";
 import { MemberRole } from "@/lib/generated/prisma"
-import { ServerWithMembersWithProfiles } from "@/types";
+import { ServerWithMembersWithProfiles, ServerWithMembersWithProfilesAndUsers } from "@/types";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { ChevronDown, LogOut, PlusCircle, Settings, Trash, UserPlus, Users } from "lucide-react";
 import InviteModal from "../modals/InviteModal";
+import CreateServerModal from "../modals/CreateServerModal";
+import MemberModal from "../modals/MemberModal";
 
 interface IProps{
     server:ServerWithMembersWithProfiles;
@@ -30,14 +32,17 @@ const ServerHeader = ({server,role}:IProps) => {
                 </DropdownMenuItem>
             )}
             {isAdmin && (
-                <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer">
-                    Server Settings
+                <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer" onSelect={(e)=> e.preventDefault()}>
+                    <CreateServerModal isUpdate={true} server={server}/>
                     <Settings className="h-4 w-4 ml-auto"/>
                 </DropdownMenuItem>
             )}
             {isAdmin && (
-                <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer">
-                    Manage Members
+                <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer" onSelect={(e)=>{ e.preventDefault()
+                                                        e.stopPropagation();
+
+                }}>
+                   <MemberModal server={server as ServerWithMembersWithProfilesAndUsers}/>
                     <Users className="h-4 w-4 ml-auto"/>
                 </DropdownMenuItem>
             )}
