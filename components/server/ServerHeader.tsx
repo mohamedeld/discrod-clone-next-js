@@ -7,6 +7,7 @@ import InviteModal from "../modals/InviteModal";
 import CreateServerModal from "../modals/CreateServerModal";
 import MemberModal from "../modals/MemberModal";
 import CreateChannelModal from "../modals/CreateChannelModal";
+import LeaveServerModal from "../modals/LeaveServerModal";
 
 interface IProps{
     server:ServerWithMembersWithProfiles;
@@ -14,8 +15,7 @@ interface IProps{
 }
 const ServerHeader = ({server,role}:IProps) => {
     const isAdmin = role === MemberRole.ADMIN;
-    const isModerator = role === MemberRole.ADMIN || MemberRole.MODERATOR;
-
+    const isModerator = role === MemberRole.ADMIN ||role === MemberRole.MODERATOR;
 
   return (
     <DropdownMenu>
@@ -66,8 +66,8 @@ const ServerHeader = ({server,role}:IProps) => {
                 </DropdownMenuItem>
             )}
             {!isAdmin && (
-                <DropdownMenuItem className="text-rose-500 px-3 py-2 text-sm cursor-pointer">
-                    Leave Server
+                <DropdownMenuItem className="text-rose-500 px-3 py-2 text-sm cursor-pointer" onSelect={(e)=> e.preventDefault()}>
+                    <LeaveServerModal server={server}/>
                     <LogOut className="h-4 w-4 ml-auto"/>
                 </DropdownMenuItem>
             )}
