@@ -60,8 +60,8 @@ const ServerHeader = ({server,role}:IProps) => {
                 <DropdownMenuSeparator/>
             )}
             {isAdmin && (
-                <DropdownMenuItem className="text-rose-500 px-3 py-2 text-sm cursor-pointer">
-                    Delete Server
+                <DropdownMenuItem className="text-rose-500 px-3 py-2 text-sm cursor-pointer" onSelect={(e)=> e.preventDefault()}>
+                    <LeaveServerModal server={server} isDelete={true}/>
                     <Trash className="h-4 w-4 ml-auto"/>
                 </DropdownMenuItem>
             )}
