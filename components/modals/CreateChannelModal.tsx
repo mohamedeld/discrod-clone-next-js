@@ -34,22 +34,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ChannelType, Server } from "@/lib/generated/prisma";
+import { Channel, ChannelType } from "@/lib/generated/prisma";
 import queryString from "query-string";
+import { Edit, Plus } from "lucide-react";
+import { ServerWithMembersWithProfiles } from "@/types";
 
 
 interface IProps{
-    server:Server;
+    server?:ServerWithMembersWithProfiles;
+    isIcon?:boolean;
+    channelType?:ChannelType;
+    channel?:Channel;
+    isUpdate?:boolean;
 }
 
-const CreateChannelModal = ({server}:IProps) => {
+const CreateChannelModal = ({server,isIcon,channelType,channel,isUpdate}:IProps) => {
   const router = useRouter();
   const [open,setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof channelSchema>>({
     defaultValues: {
-      name:'',
-      type:'TEXT'
+      name:channel?.name ? channel?.name:'',
+      type:channel?.type ? channel?.type : channelType || "TEXT"
     },
     resolver: zodResolver(channelSchema),
     mode: "onChange",
@@ -81,13 +87,15 @@ const CreateChannelModal = ({server}:IProps) => {
   return (
     <div>
        <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        Create Channel
+      <DialogTrigger asChild>
+       {isUpdate ? <Edit className="hidden group-hover:block w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"/> :isIcon ? <button className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition">
+                    <Plus className="h-4 w-4"/>
+                </button> :<button>Create Channel</button>}
       </DialogTrigger>
       <DialogContent className="bg-white text-black p-0">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-center text-2xl font-bold">
-           Create Channel
+           {isUpdate ? 'Edit' : 'Create'} Channel
           </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
             

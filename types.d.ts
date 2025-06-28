@@ -11,3 +11,9 @@ export type ServerWithMembersWithProfilesAndUsers = Server & {
     }
   })[]
 }
+
+export type MemberWithProfileAndUser = Member & {
+  profile: Profile & {
+    user: User;
+  };
+};
