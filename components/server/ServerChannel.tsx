@@ -2,7 +2,7 @@
 
 import { Channel, ChannelType, MemberRole, Server } from "@/lib/generated/prisma";
 import { cn } from "@/lib/utils";
-import { Edit, Hash, Lock, Mic, Trash, Video } from "lucide-react";
+import {  Hash, Lock, Mic, Video } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import ActionTooltip from "../ActionTooltip";
 import CreateChannelModal from "../modals/CreateChannelModal";
@@ -26,9 +26,11 @@ const ServerChannel = ({channel,server,role}:IProps) => {
     const router = useRouter();
 
     const Icon = iconMap[channel?.type];
-
+    const handleClick = ()=>{
+        router.push(`/servers/${server?.id}/channels/${channel?.id}`);
+    }
   return (
-    <button onClick={()=>{}} className={cn(
+    <button onClick={handleClick} className={cn(
         "group p-2 rounded-md flex items-cener gap-x-2 w-full hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1",
         params?.channelId === channel?.id && "bg-zinc-700/20 dark:bg-zinc-700"
     )}>
@@ -40,7 +42,7 @@ const ServerChannel = ({channel,server,role}:IProps) => {
             )
         }>{channel?.name}</p>
         {channel?.name !== "general" && role !== MemberRole.GUEST && (
-            <div className="ml-auto flex items-center gap-x-2">
+            <div className="ml-auto flex items-center gap-x-2" onClick={(e) => e.stopPropagation()}>
                 <ActionTooltip label="Edit">
                     <CreateChannelModal server={server as ServerWithMembersWithProfiles} channel={channel} isUpdate={true} />
                 </ActionTooltip>

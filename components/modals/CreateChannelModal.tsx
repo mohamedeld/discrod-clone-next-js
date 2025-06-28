@@ -63,6 +63,20 @@ const CreateChannelModal = ({server,isIcon,channelType,channel,isUpdate}:IProps)
   const isSubmitting = form?.formState?.isSubmitting;
   const onSubmit = async (data: z.infer<typeof channelSchema>) => {
     try {
+      if(isUpdate){
+        const url = queryString.stringifyUrl({
+            url:`/api/channels/${channel?.id}`,
+            query:{
+                serverId:server?.id
+            }
+        })
+        const response = await axios.patch(url,data);
+        if(response?.status ===200){    
+            router.refresh();
+            toast.success("Channel updated successfully");
+            setOpen(false);
+          }
+      }else{
         const url = queryString.stringifyUrl({
             url:`/api/channels`,
             query:{
@@ -76,6 +90,7 @@ const CreateChannelModal = ({server,isIcon,channelType,channel,isUpdate}:IProps)
             toast.success("Channel created successfully");
             setOpen(false);
           }
+      }
     } catch (error) {
         if(axios.isAxiosError(error) && error?.response){
             toast.error(error?.response?.data?.message)
@@ -151,7 +166,7 @@ const CreateChannelModal = ({server,isIcon,channelType,channel,isUpdate}:IProps)
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
               <Button disabled={isSubmitting} variant={"primary"}>
-                {isSubmitting ? "Creating..." : "Create"}
+                {isSubmitting ? isUpdate ? "Updating..." :"Creating..." :isUpdate ? "Update" : "Create"}
               </Button>
             </DialogFooter>
           </form>

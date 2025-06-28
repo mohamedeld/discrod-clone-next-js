@@ -1,6 +1,6 @@
 "use client";
 
-import { Member, MemberRole, Profile, Server } from "@/lib/generated/prisma";
+import {  MemberRole, Server } from "@/lib/generated/prisma";
 import { cn } from "@/lib/utils";
 import { ShieldAlert, ShieldCheck } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -25,9 +25,11 @@ const ServerMember = ({member,server}:IProps) => {
     const router = useRouter();
 
     const icon = roleIconMap[member?.role];
-
+    const handleClick = ()=>{
+        router.push(`/servers/${server?.id}/conversations/${member?.id}`)
+    }
   return (
-    <button className={cn(
+    <button onClick={handleClick} className={cn(
         "group p-2 rounded-md flex items-center gap-x-2 w-full hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1",
         params?.memberId === member?.id && "bg-zinc-700/20 dark:bg-zinc-700"
     )}>
