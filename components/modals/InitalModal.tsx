@@ -63,7 +63,7 @@ const InitalModal = () => {
         <Dialog open={true}>
       <DialogTrigger>
       </DialogTrigger>
-      <DialogContent className="bg-white text-black p-0">
+      <DialogContent className="bg-white text-black p-0 !top-[10%] !left-[40%]">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-center text-2xl font-bold">
             Customize your server
