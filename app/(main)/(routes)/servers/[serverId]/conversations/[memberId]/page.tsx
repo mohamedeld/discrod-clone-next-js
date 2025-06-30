@@ -44,6 +44,7 @@ const MemberDetailPage = async ({params}:IProps) => {
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
         <ChatHeader imageUrl={otherMember?.profile?.imageUrl} name={otherMember?.profile?.user?.name} serverId={serverId} type="conversation" />
+        
     </div>
   )
 }
