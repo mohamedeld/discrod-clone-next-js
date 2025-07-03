@@ -1,9 +1,11 @@
-import { auth } from "@/auth"
 import { redirect } from "next/navigation";
 import { prisma } from "./prisma";
+import { getUserSession } from "./current-profile";
+
+
 
 export const initialProfile = async ()=>{
-    const session = await auth();
+    const session = await getUserSession();
     if(!session?.user){
         return redirect("/login")
     }

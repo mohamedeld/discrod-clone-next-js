@@ -41,7 +41,8 @@ const LoginForm = () => {
                 redirect:false,
                 ...data
             });
-            if(result.error){
+            console.log("result",result)
+            if(result?.error){
                 console.log(result.error)
                 toast.error(result?.error);
                 return;

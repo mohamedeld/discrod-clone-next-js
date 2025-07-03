@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SocketProvider } from "@/providers/socket-provider";
+import AuthLayoutSession from "@/components/AuthLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +27,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} antialiased h-full`}
       >
+        <AuthLayoutSession>
         <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -37,7 +39,7 @@ export default async function RootLayout({
             </SocketProvider>
             
           </ThemeProvider>
-
+</AuthLayoutSession>
              <Toaster />
 
       </body>

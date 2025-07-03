@@ -1,5 +1,3 @@
-export default function middleware(request: Request) {}
+export { default } from "next-auth/middleware"
 
-export  const config = {
-  matcher: ["/servers/:path*", "/profile/:path*", "/setup", "/"],
-};
+export const config = { matcher: ["/"] }
