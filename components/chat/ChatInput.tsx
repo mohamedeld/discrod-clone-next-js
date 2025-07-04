@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input"
 import { Plus, Smile } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
+import MessageFileModal from "../modals/MessageFileModal";
+import EmojiPicker from "../EmojiPicker";
 
 interface IProps {
     apiUrl: string;
@@ -65,13 +67,11 @@ const ChatInput = ({ apiUrl, query, name, type }: IProps) => {
                         <FormItem>
                             <FormControl>
                                 <div className="relative p-4 pb-6">
-                                    <button type="button" onClick={() => { }} className="absolute top-7 left-8 h-[24px] w-[24px] bg-zinc-500 dark:bg-zinc-400 hover:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center">
-                                        <Plus className="text-white dark:text-[#313338]" />
-                                    </button>
+                                    <MessageFileModal query={query} apiUrl={apiUrl}/>
                                     <Input disabled={isSubmitting} className="px-14 py-6 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
                                         {...field} placeholder={`Message ${type === "conversation" ? name : '#' + name}`} />
                                     <div className="absolute top-7 right-8 ">
-                                        <Smile />
+                                        <EmojiPicker />
                                     </div>
                                 </div>
                             </FormControl>

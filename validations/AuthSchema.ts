@@ -16,6 +16,9 @@ export const formSchema = z.object({
     name:z.string().min(1,{message:"server name is required"}),
     imageUrl:z.string().min(1,{message:"server image is required"})
 })
+export const formUploadSchema = z.object({
+    imageUrl:z.string().min(1,{message:"server image is required"})
+})
 export const channelSchema = z.object({
     name:z.string().min(1,{message:"Channel name is required"}).refine(
         name=> name !== "general",{
