@@ -70,7 +70,10 @@ export async function GET(req:Request){
         if(messages?.length === MESSAGES_PATCH){
             nextCursor = messages[MESSAGES_PATCH -1]?.id
         }
-
+        return NextResponse.json({
+            items:messages,
+            nextCursor
+        });
     }catch(error){
         console.log("error messages",error);
         return new NextResponse("Internal error",{status:500})
