@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SocketProvider } from "@/providers/socket-provider";
 import AuthLayoutSession from "@/components/AuthLayout";
+import QueryProvider from "@/providers/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,9 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <SocketProvider>
+              <QueryProvider>
                 <main className="h-full">{children}</main>
+              </QueryProvider>
             </SocketProvider>
             
           </ThemeProvider>

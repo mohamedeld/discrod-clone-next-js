@@ -1,5 +1,6 @@
 import ChatHeader from "@/components/chat/ChatHeader";
 import ChatInput from "@/components/chat/ChatInput";
+import ChatMessages from "@/components/chat/ChatMessages";
 import { currentProfile } from "@/lib/current-profile";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
@@ -35,7 +36,20 @@ const ChannelDetailPage = async ({params}:IProps) => {
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
       <ChatHeader serverId={serverId} name={channel?.name} type={"channel"}/>
-      <div className="flex-1">Future Messages</div>
+      <ChatMessages
+        member={member}
+        name={channel?.name}
+        type="channel"
+        apiUrl={"/api/messages"}
+        socketUrl="/api/socket/messages"
+        socketQuery={{
+          channelId:channel?.id,
+          serverId:channel?.serverId
+        }}
+        paramKey="channelId"
+        paramValue={channel?.id}
+        chatId={channel?.id}
+      />
         <ChatInput
             name={channel?.name}
             type="channel"

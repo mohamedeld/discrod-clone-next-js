@@ -15,6 +15,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import MessageFileModal from "../modals/MessageFileModal";
 import EmojiPicker from "../EmojiPicker";
+import { useRouter } from "next/navigation";
 
 interface IProps {
     apiUrl: string;
@@ -34,6 +35,7 @@ const ChatInput = ({ apiUrl, query, name, type }: IProps) => {
         },
         resolver: zodResolver(formSchema)
     });
+    const router = useRouter();
     const isSubmitting = form.formState.isSubmitting;
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -47,6 +49,8 @@ const ChatInput = ({ apiUrl, query, name, type }: IProps) => {
                 toast.error("Failed to send message");
                 return;
             }
+            form.reset();
+            router.refresh();
         } catch (error) {
             if (axios.isAxiosError(error) && error?.response) {
                 console.log("error",error?.response?.data)
@@ -71,7 +75,9 @@ const ChatInput = ({ apiUrl, query, name, type }: IProps) => {
                                     <Input disabled={isSubmitting} className="px-14 py-6 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
                                         {...field} placeholder={`Message ${type === "conversation" ? name : '#' + name}`} />
                                     <div className="absolute top-7 right-8 ">
-                                        <EmojiPicker />
+                                        <EmojiPicker 
+                                            onChange={(emoji:string)=> field.onChange(`${field?.value} ${emoji}`)}
+                                        />
                                     </div>
                                 </div>
                             </FormControl>
