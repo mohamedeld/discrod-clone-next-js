@@ -6,6 +6,7 @@ import { useChatQuery } from "@/hooks/useChatQuery";
 import { Loader2 } from "lucide-react";
 import { Fragment } from "react";
 import ChatItem from "./ChatItem";
+import { useChatSocket } from "@/hooks/use-chat-socket";
 
 interface IProps {
   name: string;
@@ -40,6 +41,8 @@ const ChatMessages = ({
   type,
 }: IProps) => {
   const queryKey= `chat:${chatId}`;
+  const addKey = `chat:${chatId}:messages`;
+  const updateKey = `chat:${chatId}:messages:update`;
 
   const {data,fetchNextPage,hasNextPage,isFetchingNextPage,status} = useChatQuery({
     queryKey,
@@ -47,6 +50,7 @@ const ChatMessages = ({
     paramKey,
     paramValue
   });
+  useChatSocket({addKey,updateKey,queryKey});
   if(status === 'pending'){
     return (
       <div className="flex flex-col flex-1 items-center justify-center">
