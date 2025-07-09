@@ -2,7 +2,7 @@
 import { Member, MemberRole, Profile, User } from "@/lib/generated/prisma";
 import MemberAvatar from "../MemberAvatar";
 import ActionTooltip from "../ActionTooltip";
-import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
+import { Edit, FileIcon, ShieldAlert, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import queryString from "query-string";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import DeleteMessageModal from "../modals/DeleteMessageModal";
 
 interface ChatItemProps {
   id: string;
@@ -57,7 +58,6 @@ const ChatItem = ({
   socketUrl,
 }: ChatItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues:{
@@ -211,7 +211,7 @@ if (axios.isAxiosError(error) && error?.response) {
             </ActionTooltip>
           )}
           <ActionTooltip label={"Delete"}>
-            <Trash className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+            <DeleteMessageModal id={id} socketQuery={socketQuery} socketUrl={socketUrl}/>
           </ActionTooltip>
         </div>
       )}
