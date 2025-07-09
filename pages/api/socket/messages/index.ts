@@ -1,5 +1,4 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getUserData } from "@/lib/getUserData";
 import { prisma } from "@/lib/prisma";
 import { NextApiResponseServerIo } from "@/types";
 import { NextApiRequest } from "next";
