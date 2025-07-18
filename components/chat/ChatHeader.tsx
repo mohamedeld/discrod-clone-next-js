@@ -2,6 +2,7 @@ import { Hash } from "lucide-react";
 import MobileToggle from "../MobileToggle";
 import MemberAvatar from "../MemberAvatar";
 import SocketIndicator from "../SocketIndicator";
+import ChatVideoButton from "./ChatVideoButton";
 
 interface IProps{
     serverId:string;
@@ -21,6 +22,9 @@ const ChatHeader = ({serverId,name,type,imageUrl}:IProps) => {
         )}
         <p className="font-semibold text-md text-black dark:text-white">{name}</p>
         <div className="ml-auto flex items-center">
+            {type === "conversation" && (
+                <ChatVideoButton/>
+            )}
             <SocketIndicator/>
         </div>
     </div>

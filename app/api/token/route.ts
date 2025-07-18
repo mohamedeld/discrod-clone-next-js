@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   } else if (!username) {
     return NextResponse.json({ error: 'Missing "username" query parameter' }, { status: 400 });
   }
-
+console.log(" process.env.LIVEKIT_API_KEY", process.env.LIVEKIT_API_KEY)
   const apiKey = process.env.LIVEKIT_API_KEY;
   const apiSecret = process.env.LIVEKIT_API_SECRET;
   const wsUrl = process.env.LIVEKIT_URL;

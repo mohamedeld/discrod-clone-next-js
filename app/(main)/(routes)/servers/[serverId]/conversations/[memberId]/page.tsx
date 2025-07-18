@@ -1,6 +1,7 @@
 import ChatHeader from "@/components/chat/ChatHeader";
 import ChatInput from "@/components/chat/ChatInput";
 import ChatMessages from "@/components/chat/ChatMessages";
+import MediaRoom from "@/components/MediaRoom";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { currentProfile } from "@/lib/current-profile";
 import { prisma } from "@/lib/prisma";
@@ -10,11 +11,15 @@ interface IProps{
     params:Promise<{
         serverId:string;
         memberId:string;
+    }>,
+    searchParams:Promise<{
+        video?:boolean;
     }>
 }
 
-const MemberDetailPage = async ({params}:IProps) => {
+const MemberDetailPage = async ({params,searchParams}:IProps) => {
     const {serverId,memberId} = await params;
+    const {video} = await searchParams;
     const profile = await currentProfile();
     if(!profile){
         return redirect("/login");
@@ -46,7 +51,9 @@ const MemberDetailPage = async ({params}:IProps) => {
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
         <ChatHeader imageUrl={otherMember?.profile?.imageUrl} name={otherMember?.profile?.user?.name} serverId={serverId} type="conversation" />
-        <ChatMessages 
+        {!video && (
+            <>
+                <ChatMessages 
             member={currentMember}
             name={otherMember?.profile?.user?.name}
             chatId={conversation?.id}
@@ -67,6 +74,15 @@ const MemberDetailPage = async ({params}:IProps) => {
                 conversationId:conversation?.id
             }}
         />
+            </>
+        )}
+        {video && (
+            <MediaRoom
+                chatId={conversation?.id}
+                video={true}
+                audio={false}
+            />
+        )}
     </div>
   )
 }
