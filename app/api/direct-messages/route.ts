@@ -1,5 +1,5 @@
 import { currentProfile } from "@/lib/current-profile";
-import { Message } from "@/lib/generated/prisma";
+import { DirectMessage } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -10,23 +10,23 @@ export async function GET(req:Request){
         const profile = await currentProfile();
         const {searchParams} = new URL(req.url);
         const cursor = searchParams.get("cursor");
-        const channelId = searchParams.get("channelId");
+        const conversationId = searchParams.get("conversationId");
         if(!profile){
             return new NextResponse("Unauthorized",{status:401})
         }
-        if(!channelId){
-            return new NextResponse("Channel Id is missing ",{status:400})
+        if(!conversationId){
+            return new NextResponse("Conversation Id is missing ",{status:400})
         }
-        let messages:Message[] = [];
+        let messages:DirectMessage[] = [];
         if(cursor){
-            messages = await prisma.message.findMany({
+            messages = await prisma.directMessage.findMany({
                 take:MESSAGES_PATCH,
                 skip:1,
                 cursor:{
                     id:cursor
                 },
                 where:{
-                    channelId,
+                    conversationId,
                 },
                 include:{
                     member:{
@@ -44,10 +44,10 @@ export async function GET(req:Request){
                 }
             })
         }else{
-            messages = await prisma.message.findMany({
+            messages = await prisma.directMessage.findMany({
                 take:MESSAGES_PATCH,
                 where:{
-                    channelId
+                    conversationId
                 },
                 include:{
                     member:{
@@ -75,7 +75,7 @@ export async function GET(req:Request){
             nextCursor
         });
     }catch(error){
-        console.log("error messages",error);
+        console.log("error direct messages",error);
         return new NextResponse("Internal error",{status:500})
     }
 }

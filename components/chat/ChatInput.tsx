@@ -10,7 +10,6 @@ import {
     FormItem,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Plus, Smile } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 import MessageFileModal from "../modals/MessageFileModal";
@@ -42,7 +41,7 @@ const ChatInput = ({ apiUrl, query, name, type }: IProps) => {
         try {
             const url = queryString.stringifyUrl({
                 url: apiUrl,
-                query
+                query,
             });
             const response = await axios.post(url,data);
             if(response.status !== 200){

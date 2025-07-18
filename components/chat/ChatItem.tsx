@@ -103,7 +103,6 @@ const ChatItem = ({
   
   const isPDF = fileType === "pdf" && fileUrl;
   const isImage = !isPDF && fileUrl;
-  
   const onSubmit = async(values:z.infer<typeof formSchema>)=>{
     try{
       const url = queryString.stringifyUrl({
@@ -125,6 +124,8 @@ if (axios.isAxiosError(error) && error?.response) {
             }
     }
   }
+  console.log(currentMember?.profileId)
+  console.log(member?.profile?.userId)
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
